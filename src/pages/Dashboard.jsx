@@ -4,11 +4,11 @@ import StaffDashboard from './staff/StaffDashboard';
 import ClientDashboard from './client/ClientDashboard';
 
 const Dashboard = () => {
-  // 🔹 Leer datos de localStorage directamente (es síncrono)
+  // 🔹 Leer datos de localStorage directamente
   const userData = localStorage.getItem('user');
   const userRole = userData ? JSON.parse(userData).role : null;
   
-  // 🔹 Estado para loading (opcional, si los dashboards hijos cargan datos de API)
+  // 🔹 Estado para loading
   const [loading] = useState(false);
 
   // Renderizar dashboard según el rol
@@ -40,7 +40,7 @@ const Dashboard = () => {
     }
   };
 
-  // 🔹 Loading opcional (si lo necesitas para datos asíncronos de los hijos)
+  // 🔹 Loading opcional
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">

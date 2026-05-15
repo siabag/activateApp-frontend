@@ -19,7 +19,7 @@ const RegisterAttendance = () => {
     if (term.length >= 2) {
       try {
         const data = await buscarUsuarios(term);
-        setUsuarios(data.results || data); // Ajustar según la paginación de tu API
+        setUsuarios(data.results || data);
       } catch (err) {
         console.error(err);
       }

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getEstadisticasGenerales, getAsistenciaHoy, getAlertasMembresias } from '../../services/dashboardService';
-import { UsersIcon, CreditCardIcon, ChartBarIcon, ExclamationTriangleIcon, UserPlusIcon } from '@heroicons/react/24/outline';
+import { UsersIcon, CreditCardIcon, ChartBarIcon, ExclamationTriangleIcon, UserPlusIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline';
 
 const OwnerDashboard = () => {
   const [stats, setStats] = useState(null);
@@ -119,7 +119,7 @@ const OwnerDashboard = () => {
         </div>
       )}
 
-      {/* ✅ Accesos Rápidos Actualizados */}
+      {/* Accesos Rápidos */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-semibold mb-4 text-slate-800">Accesos Rápidos</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -148,7 +148,7 @@ const OwnerDashboard = () => {
             </div>
           </Link>
 
-          {/* ✅ NUEVO: Enlace a Planes de Entrenamiento */}
+          {/* Enlace a Planes de Entrenamiento */}
           <Link 
             to="/planes" 
             className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg text-left transition cursor-pointer flex items-center"
@@ -193,6 +193,18 @@ const OwnerDashboard = () => {
             <div>
               <p className="font-medium text-sky-900">Registrar Asistencia</p>
               <p className="text-sm text-sky-600">Marcar entrada/salida</p>
+            </div>
+          </Link>
+
+          {/* Enlace a Historial de Planes */}
+          <Link 
+            to="/historial-planes" 
+            className="p-4 bg-slate-50 hover:bg-slate-100 rounded-lg text-left transition cursor-pointer flex items-center"
+          >
+            <ArchiveBoxIcon className="w-8 h-8 text-slate-600 mr-3" />
+            <div>
+              <p className="font-medium text-slate-900">Historial de Planes</p>
+              <p className="text-sm text-slate-600">Ver registros de asignaciones</p>
             </div>
           </Link>
 

@@ -187,7 +187,7 @@ const PlanManagement = () => {
                         <ErrorMessage name="nombre" component="p" className="text-red-500 text-xs mt-1" />
                       </div>
                       
-                      {/* ✅ NUEVO: Campo de Nivel de Dificultad */}
+                      {/* Campo de Nivel de Dificultad */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700">Nivel de Dificultad</label>
                         <Field as="select" name="nivel_dificultad" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
@@ -216,7 +216,7 @@ const PlanManagement = () => {
                         <ErrorMessage name="area_muscular" component="p" className="text-red-500 text-xs mt-1" />
                       </div>
                       
-                      {/* ✅ NUEVO: Campo de Duración en Semanas */}
+                      {/* Campo de Duración en Semanas */}
                       <div>
                         <label className="block text-sm font-medium text-gray-700">Duración (Semanas)</label>
                         <Field name="duracion_semanas" type="number" min="1" max="52" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3" />

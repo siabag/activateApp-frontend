@@ -9,6 +9,7 @@ import MembershipManagement from './pages/owner/MembershipManagement';
 import ClientList from './pages/users/ClientList';
 import ActiveAttendance from './pages/attendance/ActiveAttendance';
 import PlanManagement from './pages/owner/PlanManagement';
+import PlanHistory from './pages/owner/PlanHistory';
 
 const AppRouter = () => {
   return (
@@ -40,8 +41,11 @@ const AppRouter = () => {
             {/* Ruta para Clientes en Casa */}
             <Route path="asistencia/activos" element={<ActiveAttendance />} />
             
-            {/* Planes de Entrenamiento */}
+            {/* Ruta para Planes de Entrenamiento */}
             <Route path="planes" element={<PlanManagement />} />
+            
+            {/* Ruta: Historial de Planes */}
+            <Route path="historial-planes" element={<PlanHistory />} />
             
           </Route>
         </Route>

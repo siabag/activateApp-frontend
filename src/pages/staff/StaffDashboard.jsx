@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAsistenciaHoy } from '../../services/dashboardService';
-import { UsersIcon, ClipboardDocumentCheckIcon, CalendarIcon, ChartBarIcon } from '@heroicons/react/24/outline';
+import { UsersIcon, ClipboardDocumentCheckIcon, CalendarIcon, ChartBarIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline';
 
 const StaffDashboard = () => {
   const [asistenciaHoy, setAsistenciaHoy] = useState(null);
@@ -62,7 +62,7 @@ const StaffDashboard = () => {
         </div>
       </div>
 
-      {/* ✅ Sección de Accesos Rápidos Actualizada */}
+      {/* Sección de Accesos Rápidos */}
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-semibold mb-4">Accesos Rápidos</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -94,7 +94,7 @@ const StaffDashboard = () => {
             <p className="text-sm text-purple-600">Listado de clientes activos</p>
           </Link>
 
-          {/* ✅ NUEVO: Botón: Planes de Entrenamiento */}
+          {/* Botón: Planes de Entrenamiento */}
           <Link 
             to="/planes" 
             className="p-4 bg-orange-50 hover:bg-orange-100 rounded-lg text-left transition flex items-center"
@@ -103,6 +103,18 @@ const StaffDashboard = () => {
             <div>
               <p className="font-medium text-orange-900">Planes de Entrenamiento</p>
               <p className="text-sm text-orange-600">Gestionar rutinas y ejercicios</p>
+            </div>
+          </Link>
+
+          {/* Botón: Historial de Planes */}
+          <Link 
+            to="/historial-planes" 
+            className="p-4 bg-slate-50 hover:bg-slate-100 rounded-lg text-left transition flex items-center"
+          >
+            <ArchiveBoxIcon className="w-8 h-8 text-slate-600 mr-3" />
+            <div>
+              <p className="font-medium text-slate-900">Historial de Planes</p>
+              <p className="text-sm text-slate-600">Ver registros de asignaciones</p>
             </div>
           </Link>
           

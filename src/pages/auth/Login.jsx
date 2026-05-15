@@ -43,7 +43,7 @@ const Login = () => {
       localStorage.setItem('access_token', access);
       localStorage.setItem('refresh_token', refresh);
 
-      // 🔹 (Opcional) Obtener y guardar información del usuario
+      // 🔹 Obtener y guardar información del usuario
       const userResponse = await api.get('/usuarios/profile/');
       localStorage.setItem('user', JSON.stringify(userResponse.data));
 
@@ -168,7 +168,7 @@ const Login = () => {
           )}
         </Formik>
 
-        {/* Enlace a registro (opcional) */}
+        {/* Enlace a registro */}
         <p className="mt-6 text-center text-sm text-gray-500">
           ¿No tienes cuenta?{' '}
           <Link to="/register" className="text-sky-600 hover:text-sky-500 font-medium">
@@ -176,7 +176,7 @@ const Login = () => {
           </Link>
         </p>
 
-        {/* Credenciales de prueba (solo desarrollo) */}
+        {/* Credenciales de prueba */}
         {import.meta.env.DEV && (
           <div className="mt-6 p-3 bg-slate-50 rounded-md text-xs text-gray-500">
             <p className="font-medium mb-1">Credenciales de prueba:</p>
