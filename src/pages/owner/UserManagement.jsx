@@ -13,6 +13,10 @@ const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  
+  // Obtener el usuario logueado para verificar permisos
+  const loggedUser = JSON.parse(localStorage.getItem('user'));
+  const isPropietario = loggedUser?.role === 'PROPIETARIO';
 
   // Esquema de validación con Yup
   const validationSchema = Yup.object({
@@ -20,6 +24,13 @@ const UserManagement = () => {
     last_name: Yup.string().required('El apellido es requerido'),
     email: Yup.string().email('Email inválido').required('El email es requerido'),
     telefono: Yup.string().required('El teléfono es requerido'),
+    role: Yup.string()
+      .oneOf(['CLIENTE', 'PERSONAL', 'PROPIETARIO'], 'Rol inválido')
+      .when('$isPropietario', {
+        is: true,
+        then: () => Yup.string().required('El rol es requerido'),
+        otherwise: () => Yup.string().notRequired()
+      }),
     peso: Yup.number()
       .when('$isEdit', {
         is: false,
@@ -49,7 +60,7 @@ const UserManagement = () => {
       })
   });
 
-  // Cargar usuarios (memoizado con useCallback)
+  // Cargar usuarios
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
@@ -86,13 +97,31 @@ const UserManagement = () => {
     setIsModalOpen(true);
   };
 
-  // Guardar usuario (Crear o Editar)
+  // Guardar usuario (Crear o Editar) - LÓGICA CORREGIDA
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     try {
+      const payload = { ...values };
+      
+      // Determinar el rol correctamente
+      if (!isPropietario) {
+        // Si es Personal -> Siempre crea CLIENTE
+        payload.role = 'CLIENTE';
+      } else if (!payload.role || payload.role === '') {
+        // Si es Propietario pero no seleccionó rol -> CLIENTE por defecto
+        payload.role = 'CLIENTE';
+      }
+      // Si es Propietario Y seleccionó un rol (PERSONAL/PROPIETARIO) -> Se respeta
+      
+      // Limpiar campos de control de Formik
+      delete payload.isEdit;
+      delete payload.isPropietario;
+      
+      console.log('🚀 Enviando al backend:', payload);
+      
       if (currentUser) {
-        await updateUser(currentUser.id, values);
+        await updateUser(currentUser.id, payload);
       } else {
-        await createUser(values);
+        await createUser(payload);
       }
       setIsModalOpen(false);
       resetForm();
@@ -118,6 +147,16 @@ const UserManagement = () => {
     }
   };
 
+  // Helper para badges de rol
+  const getRoleBadge = (role) => {
+    const styles = {
+      'CLIENTE': 'bg-green-100 text-green-800',
+      'PERSONAL': 'bg-blue-100 text-blue-800',
+      'PROPIETARIO': 'bg-purple-100 text-purple-800'
+    };
+    return styles[role] || 'bg-gray-100 text-gray-800';
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Botón Volver al Panel */}
@@ -135,7 +174,7 @@ const UserManagement = () => {
           className="bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg flex items-center transition"
         >
           <UserPlusIcon className="w-5 h-5 mr-2" />
-          Nuevo Cliente
+          {isPropietario ? 'Nuevo Usuario' : 'Nuevo Cliente'}
         </button>
       </div>
 
@@ -181,9 +220,7 @@ const UserManagement = () => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.telefono || 'N/A'}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        user.role === 'CLIENTE' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                      }`}>
+                      <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getRoleBadge(user.role)}`}>
                         {user.role}
                       </span>
                     </td>
@@ -205,7 +242,7 @@ const UserManagement = () => {
               </tbody>
             </table>
             
-            {/* Paginación Simple */}
+            {/* Paginación */}
             <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
               <div className="flex-1 flex justify-between sm:hidden">
                 <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50">
@@ -245,7 +282,7 @@ const UserManagement = () => {
               <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="flex justify-between items-center mb-4">
                   <h3 className="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                    {currentUser ? 'Editar Usuario' : 'Nuevo Cliente'}
+                    {currentUser ? 'Editar Usuario' : (isPropietario ? 'Nuevo Usuario' : 'Nuevo Cliente')}
                   </h3>
                   <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-500">
                     <XMarkIcon className="w-6 h-6" />
@@ -260,15 +297,19 @@ const UserManagement = () => {
                     telefono: currentUser?.telefono || '',
                     peso: currentUser?.peso || '',
                     altura: currentUser?.altura || '',
+                    // ✅ CORRECCIÓN CLAVE: Dejar vacío al crear para que tome el valor del select
+                    role: currentUser?.role || '',
                     password: '',
                     password_confirm: '',
-                    isEdit: !!currentUser
+                    isEdit: !!currentUser,
+                    isPropietario: isPropietario
                   }}
                   validationSchema={validationSchema}
                   onSubmit={handleSubmit}
                   enableReinitialize
+                  context={{ isEdit: !!currentUser, isPropietario }}
                 >
-                  {({ isSubmitting, touched, errors }) => (
+                  {({ isSubmitting, touched, errors, values }) => (
                     <Form className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
@@ -294,6 +335,29 @@ const UserManagement = () => {
                         <Field name="telefono" className={`mt-1 block w-full border rounded-md shadow-sm py-2 px-3 ${touched.telefono && errors.telefono ? 'border-red-300' : 'border-gray-300'}`} />
                         <ErrorMessage name="telefono" component="p" className="mt-1 text-sm text-red-600" />
                       </div>
+
+                      {/* ✅ SELECTOR DE ROL - Solo visible para PROPIETARIO al crear */}
+                      {isPropietario && !currentUser && (
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Rol <span className="text-red-500">*</span>
+                          </label>
+                          <Field 
+                            as="select" 
+                            name="role" 
+                            className={`mt-1 block w-full border rounded-md shadow-sm py-2 px-3 bg-white ${touched.role && errors.role ? 'border-red-300' : 'border-gray-300'}`}
+                          >
+                            <option value="">Seleccionar rol...</option>
+                            <option value="CLIENTE">Cliente</option>
+                            <option value="PERSONAL">Personal / Entrenador</option>
+                            <option value="PROPIETARIO">Propietario</option>
+                          </Field>
+                          <ErrorMessage name="role" component="p" className="mt-1 text-sm text-red-600" />
+                          <p className="text-xs text-gray-500 mt-1">
+                            ⚠️ Solo asigna rol "Propietario" a usuarios de total confianza.
+                          </p>
+                        </div>
+                      )}
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>

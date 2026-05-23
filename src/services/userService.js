@@ -14,11 +14,8 @@ export const getUsers = async (params = {}) => {
 // Crear nuevo usuario
 export const createUser = async (userData) => {
   try {
-    // Por defecto, creamos usuarios con rol 'CLIENTE' desde esta vista
-    const response = await api.post('/usuarios/admin/', {
-      ...userData,
-      role: 'CLIENTE'
-    });
+    // ✅ CORREGIDO: Enviar el rol tal como viene del formulario
+    const response = await api.post('/usuarios/admin/', userData);
     return response.data;
   } catch (error) {
     console.error('Error creando usuario:', error);

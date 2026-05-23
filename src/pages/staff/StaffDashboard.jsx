@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAsistenciaHoy } from '../../services/dashboardService';
-import { UsersIcon, ClipboardDocumentCheckIcon, CalendarIcon, ChartBarIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline';
+import { UsersIcon, ClipboardDocumentCheckIcon, CalendarIcon, ChartBarIcon, ArchiveBoxIcon, UserPlusIcon } from '@heroicons/react/24/outline';
 
 const StaffDashboard = () => {
   const [asistenciaHoy, setAsistenciaHoy] = useState(null);
@@ -67,6 +67,18 @@ const StaffDashboard = () => {
         <h3 className="text-lg font-semibold mb-4">Accesos Rápidos</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           
+          {/* Botón Gestión de Usuarios */}
+          <Link 
+            to="/usuarios" 
+            className="p-4 bg-indigo-50 hover:bg-indigo-100 rounded-lg text-left transition flex items-center"
+          >
+            <UserPlusIcon className="w-8 h-8 text-indigo-600 mr-3" />
+            <div>
+              <p className="font-medium text-indigo-900">Gestión de Usuarios</p>
+              <p className="text-sm text-indigo-600">Crear y editar clientes</p>
+            </div>
+          </Link>
+
           {/* Botón: Registrar Asistencia */}
           <Link 
             to="/asistencia/registrar" 

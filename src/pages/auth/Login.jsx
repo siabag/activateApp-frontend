@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import api from '../../services/api';
@@ -47,8 +47,13 @@ const Login = () => {
       const userResponse = await api.get('/usuarios/profile/');
       localStorage.setItem('user', JSON.stringify(userResponse.data));
 
-      // 🔹 Redirigir al dashboard
-      navigate('/dashboard');
+      // 🔹 Redirigir al dashboard correspondiente según el rol
+      const user = userResponse.data;
+      if (user.role === 'CLIENTE') {
+        navigate('/cliente-dashboard');
+      } else {
+        navigate('/dashboard');
+      }
       resetForm();
       
     } catch (err) {
@@ -168,13 +173,7 @@ const Login = () => {
           )}
         </Formik>
 
-        {/* Enlace a registro */}
-        <p className="mt-6 text-center text-sm text-gray-500">
-          ¿No tienes cuenta?{' '}
-          <Link to="/register" className="text-sky-600 hover:text-sky-500 font-medium">
-            Regístrate aquí
-          </Link>
-        </p>
+        {/* ✅ Enlace de registro ELIMINADO - Solo admin/personal crea usuarios */}
 
         {/* Credenciales de prueba */}
         {import.meta.env.DEV && (
